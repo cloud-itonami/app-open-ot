@@ -1,0 +1,55 @@
+{
+  "@context": "https://etzhayyim.com/ns/open-ot/cell/v1",
+  "name": "pid-stack-100",
+  "description": "Risk-1 Gate A workload BFB — 100 independent PI controllers per tick (shared params, per-instance state)",
+  "fb_kind": "BFB",
+  "iec61499_fbtype": "PID_STACK_100",
+  "abi": {
+    "init_export": "pid_stack_100_init",
+    "tick_export": "pid_stack_100_tick"
+  },
+  "ecc": {
+    "states": ["Idle", "Healthy", "Degraded", "AllAlarm"],
+    "initial": "Idle",
+    "transitions": [
+      { "from": "*", "event": "REQ", "guard": "all_alarm",                     "to": "AllAlarm" },
+      { "from": "*", "event": "REQ", "guard": "any_alarm && some_healthy",      "to": "Degraded" },
+      { "from": "*", "event": "REQ", "guard": "no_healthy && no_alarm (all disabled)", "to": "Idle" },
+      { "from": "*", "event": "REQ", "guard": "default",                        "to": "Healthy" }
+    ]
+  },
+  "events_in": [
+    { "name": "REQ", "with": ["pvs", "sps", "qualities", "enables"] }
+  ],
+  "events_out": [
+    { "name": "CNF", "with": ["cvs", "errors", "saturated_flags", "alarm_flags"] },
+    { "name": "ALM", "with": [] }
+  ],
+  "data_in_schema": [],
+  "data_out_schema": [],
+  "params_schema": [
+    { "name": "kp_micro",        "rust_type": "i32" },
+    { "name": "ki_micro",        "rust_type": "i32" },
+    { "name": "out_min_micro",   "rust_type": "i32" },
+    { "name": "out_max_micro",   "rust_type": "i32" },
+    { "name": "cycle_period_ms", "rust_type": "u32" }
+  ],
+  "internal_schema": [],
+  "tick_max_emitted": 1,
+  "tick_max_neighbor_msgs": 0,
+  "n_instances": 100,
+  "constraints": {
+    "no_alloc_after_init": true,
+    "no_float": true,
+    "no_std_time": true,
+    "no_rng": true,
+    "deterministic_replay": true,
+    "shared_params": true,
+    "per_instance_state": true
+  },
+  "data_in_size_bytes": 1000,
+  "data_out_size_bytes": 1000,
+  "internal_size_bytes": 1300,
+  "params_size_bytes": 24,
+  "data_layout_note": "DataIn / DataOut / Internal use fixed-length arrays (100 elements). Codegen does not yet emit per-element packers; the gate-a-rig writes raw bytes via struct.pack with a constructed format string. Future framework work: add `array` rust_type to manifest schema."
+}

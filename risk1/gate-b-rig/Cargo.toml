@@ -1,0 +1,17 @@
+[package]
+name = "gate-b-rig"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Risk-1 Gate B simulator — N field cells × 1 aggregator super-step driver with checkpoint write + crash injection + resume timer, approximating SPEC §14.2 on the host without 3× Atama + 12× Mimi/Te hardware"
+
+[[bin]]
+name = "gate-b-rig"
+path = "src/main.rs"
+
+[dependencies]
+wasmtime = { version = "46", default-features = false, features = ["cranelift", "runtime"] }
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"

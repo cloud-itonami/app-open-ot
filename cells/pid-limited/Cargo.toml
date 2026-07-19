@@ -1,0 +1,21 @@
+[package]
+name = "pid-limited"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "IEC 61499 PID_LIMITED reference BFB cell — saturating PI with anti-windup, fixed-point integer math"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+openot-bfb-rs.workspace = true
+
+[features]
+default = ["std"]
+std = ["openot-bfb-rs/std"]
+
+[lints]
+workspace = true

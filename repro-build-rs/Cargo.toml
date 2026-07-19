@@ -1,0 +1,23 @@
+[package]
+name = "repro-build-rs"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/etzhayyim/root"
+authors = ["etzhayyim"]
+description = "open-ot reproducibility harness — compile BFB cells twice, BLAKE3-hash artefacts, diff. Gate C §2.1 evidence today; the same harness applied to wamrc AOT outputs covers the Mimi tooling chain post-Risk-1 PASS."
+
+[[bin]]
+name = "repro-build"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"
+blake3 = "1"
+hex = "0.4"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

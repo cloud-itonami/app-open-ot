@@ -1,0 +1,21 @@
+[package]
+name = "mppt-perturb-observe"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "IEC 61499 MPPT_PERTURB_OBSERVE BFB — PV array Maximum Power Point Tracking via Perturb & Observe. 100 Hz field-tier cell per PROTOTYPE-MICROGRID §13.2."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+openot-bfb-rs.workspace = true
+
+[features]
+default = ["std"]
+std = ["openot-bfb-rs/std"]
+
+[lints]
+workspace = true

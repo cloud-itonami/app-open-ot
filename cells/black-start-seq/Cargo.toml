@@ -1,0 +1,21 @@
+[package]
+name = "black-start-seq"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "IEC 61499 BLACK_START_SEQ BFB — multi-stage black-start sequence FSM (outage detect → start gen → energize bus → sync → connect to grid). Used by :loop:islanding-decision per PROTOTYPE-MICROGRID §13.2."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+openot-bfb-rs.workspace = true
+
+[features]
+default = ["std"]
+std = ["openot-bfb-rs/std"]
+
+[lints]
+workspace = true

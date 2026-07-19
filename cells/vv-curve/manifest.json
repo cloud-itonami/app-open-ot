@@ -1,0 +1,62 @@
+{
+  "@context": "https://etzhayyim.com/ns/open-ot/cell/v1",
+  "name": "vv-curve",
+  "description": "IEC 61499 VV_CURVE BFB — Volt-VAR piecewise-linear curve lookup (IEEE 1547 / IEC 62116 default-curve compatible) for inverter Q control",
+  "fb_kind": "BFB",
+  "iec61499_fbtype": "VV_CURVE",
+  "abi": {
+    "init_export": "vv_curve_init",
+    "tick_export": "vv_curve_tick"
+  },
+  "ecc": {
+    "states": ["Idle", "InDeadBand", "Absorbing", "Injecting", "Saturated", "Alarm"],
+    "initial": "Idle",
+    "transitions": [
+      { "from": "*",  "event": "REQ", "guard": "voltage.q==bad||voltage.q==stale", "to": "Alarm" },
+      { "from": "*",  "event": "REQ", "guard": "!enable",                          "to": "Idle" },
+      { "from": "*",  "event": "REQ", "guard": "!curve_monotonic || q_max<=0",     "to": "Alarm" },
+      { "from": "*",  "event": "REQ", "guard": "v>=v_full_high",                   "to": "Saturated" },
+      { "from": "*",  "event": "REQ", "guard": "v>=v_dead_high",                   "to": "Absorbing" },
+      { "from": "*",  "event": "REQ", "guard": "v>v_dead_low",                     "to": "InDeadBand" },
+      { "from": "*",  "event": "REQ", "guard": "v>v_full_low",                     "to": "Injecting" },
+      { "from": "*",  "event": "REQ", "guard": "default",                          "to": "Saturated" }
+    ]
+  },
+  "events_in":  [{ "name": "REQ", "with": ["voltage_micro_pu", "q_max_micro_var", "voltage_quality", "enable"] }],
+  "events_out": [
+    { "name": "CNF", "with": ["q_setpoint_micro_var", "voltage_deviation_micro_pu", "in_dead_band", "saturated"] },
+    { "name": "ALM", "with": [] }
+  ],
+  "data_in_schema": [
+    { "name": "voltage_micro_pu",  "rust_type": "i32",  "wire": "valueMicroUnit", "unitCode": "uPU" },
+    { "name": "q_max_micro_var",   "rust_type": "i32",  "wire": "valueMicroUnit", "unitCode": "uVAR" },
+    { "name": "voltage_quality",   "rust_type": "u8",   "wire": "qualityEnum" },
+    { "name": "enable",            "rust_type": "bool", "wire": "boolean" }
+  ],
+  "data_out_schema": [
+    { "name": "q_setpoint_micro_var",        "rust_type": "i32",  "wire": "valueMicroUnit", "unitCode": "uVAR" },
+    { "name": "voltage_deviation_micro_pu",  "rust_type": "i32",  "wire": "valueMicroUnit", "unitCode": "uPU" },
+    { "name": "in_dead_band",                "rust_type": "bool", "wire": "boolean" },
+    { "name": "saturated",                   "rust_type": "bool", "wire": "boolean" }
+  ],
+  "params_schema": [
+    { "name": "v_dead_high_micro_pu", "rust_type": "i32", "description": "Voltage > this → start absorbing Q (IEEE 1547: 1_030_000)" },
+    { "name": "v_full_high_micro_pu", "rust_type": "i32", "description": "Voltage > this → -Q_max (IEEE 1547: 1_060_000)" },
+    { "name": "v_dead_low_micro_pu",  "rust_type": "i32", "description": "Voltage < this → start injecting Q (IEEE 1547: 970_000)" },
+    { "name": "v_full_low_micro_pu",  "rust_type": "i32", "description": "Voltage < this → +Q_max (IEEE 1547: 900_000)" },
+    { "name": "cycle_period_ms",      "rust_type": "u32" }
+  ],
+  "internal_schema": [
+    { "name": "last_setpoint_micro_var", "rust_type": "i32",  "checkpoint": true },
+    { "name": "initialized",             "rust_type": "bool", "checkpoint": true }
+  ],
+  "tick_max_emitted": 1,
+  "tick_max_neighbor_msgs": 0,
+  "constraints": {
+    "no_alloc_after_init": true,
+    "no_float": true,
+    "no_std_time": true,
+    "no_rng": true,
+    "deterministic_replay": true
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "@context": "https://etzhayyim.com/ns/open-ot/cell/v1",
+  "name": "ltc-tap-fsm",
+  "description": "IEC 61499 LTC_TAP_FSM BFB — Load Tap Changer finite state machine (deadband + dwell timer + raise/lower commands subject to tap_min/tap_max limits)",
+  "fb_kind": "BFB",
+  "iec61499_fbtype": "LTC_TAP_FSM",
+  "abi": {
+    "init_export": "ltc_tap_fsm_init",
+    "tick_export": "ltc_tap_fsm_tick"
+  },
+  "ecc": {
+    "states": ["Idle", "Holding", "Raising", "Lowering", "Limit", "Alarm"],
+    "initial": "Idle",
+    "transitions": [
+      { "from": "*",  "event": "REQ", "guard": "voltage.q==bad||voltage.q==stale", "to": "Alarm" },
+      { "from": "*",  "event": "REQ", "guard": "!enable",                          "to": "Idle" },
+      { "from": "*",  "event": "REQ", "guard": "tap_min>=tap_max || dead_band<0",  "to": "Alarm" },
+      { "from": "*",  "event": "REQ", "guard": "abs(error)<=dead_band",            "to": "Holding" },
+      { "from": "*",  "event": "REQ", "guard": "dwell_remaining>0",                "to": "Holding" },
+      { "from": "*",  "event": "REQ", "guard": "error>0 && tap<=tap_min",          "to": "Limit" },
+      { "from": "*",  "event": "REQ", "guard": "error<0 && tap>=tap_max",          "to": "Limit" },
+      { "from": "*",  "event": "REQ", "guard": "error>0",                          "to": "Lowering" },
+      { "from": "*",  "event": "REQ", "guard": "default",                          "to": "Raising" }
+    ]
+  },
+  "events_in":  [{ "name": "REQ", "with": ["voltage_meas_micro_v", "voltage_target_micro_v", "tap_position", "voltage_quality", "enable"] }],
+  "events_out": [
+    { "name": "CNF", "with": ["command", "voltage_error_micro_v", "dwell_remaining_ms", "at_limit"] },
+    { "name": "ALM", "with": [] }
+  ],
+  "data_in_schema": [
+    { "name": "voltage_meas_micro_v",   "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uV" },
+    { "name": "voltage_target_micro_v", "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uV" },
+    { "name": "tap_position",           "rust_type": "i16",  "wire": "integerSigned" },
+    { "name": "voltage_quality",        "rust_type": "u8",   "wire": "qualityEnum" },
+    { "name": "enable",                 "rust_type": "bool", "wire": "boolean" }
+  ],
+  "data_out_schema": [
+    { "name": "command",                "rust_type": "u8",   "wire": "tapCommandEnum" },
+    { "name": "voltage_error_micro_v",  "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uV" },
+    { "name": "dwell_remaining_ms",     "rust_type": "u32",  "wire": "durationMs" },
+    { "name": "at_limit",               "rust_type": "bool", "wire": "boolean" }
+  ],
+  "params_schema": [
+    { "name": "dead_band_micro_v",   "rust_type": "i64", "description": "Symmetric deadband around target in uV" },
+    { "name": "dwell_ms",            "rust_type": "u32", "description": "Min dwell after tap movement (ms)" },
+    { "name": "tap_min",             "rust_type": "i16", "description": "Lower tap limit" },
+    { "name": "tap_max",             "rust_type": "i16", "description": "Upper tap limit" },
+    { "name": "cycle_period_ms",     "rust_type": "u32" }
+  ],
+  "internal_schema": [
+    { "name": "dwell_remaining_ms", "rust_type": "u32",  "checkpoint": true },
+    { "name": "last_command",       "rust_type": "u8",   "checkpoint": true },
+    { "name": "initialized",        "rust_type": "bool", "checkpoint": true }
+  ],
+  "tick_max_emitted": 1,
+  "tick_max_neighbor_msgs": 0,
+  "constraints": {
+    "no_alloc_after_init": true,
+    "no_float": true,
+    "no_std_time": true,
+    "no_rng": true,
+    "deterministic_replay": true
+  }
+}

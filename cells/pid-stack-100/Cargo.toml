@@ -1,0 +1,21 @@
+[package]
+name = "pid-stack-100"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Risk-1 Gate A workload BFB — 100 independent PI controllers per tick (shared params, per-instance state)"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+openot-bfb-rs.workspace = true
+
+[features]
+default = ["std"]
+std = ["openot-bfb-rs/std"]
+
+[lints]
+workspace = true

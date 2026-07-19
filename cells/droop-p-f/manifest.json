@@ -1,0 +1,68 @@
+{
+  "@context": "https://etzhayyim.com/ns/open-ot/cell/v1",
+  "name": "droop-p-f",
+  "description": "IEC 61499 DROOP_P_F BFB — frequency-droop active-power response with deadband (P-f droop, pure proportional)",
+  "fb_kind": "BFB",
+  "iec61499_fbtype": "DROOP_P_F",
+  "abi": {
+    "init_export": "droop_p_f_init",
+    "tick_export": "droop_p_f_tick"
+  },
+  "ecc": {
+    "states": ["Idle", "WithinDeadband", "Responding", "Saturated", "Alarm"],
+    "initial": "Idle",
+    "transitions": [
+      { "from": "*",            "event": "REQ", "guard": "quality==bad || quality==stale", "to": "Alarm" },
+      { "from": "*",            "event": "REQ", "guard": "!enable",                        "to": "Idle" },
+      { "from": "*",            "event": "REQ", "guard": "droop==0 || f_nominal==0",        "to": "Alarm" },
+      { "from": "*",            "event": "REQ", "guard": "abs(f_error) <= dead_band",       "to": "WithinDeadband" },
+      { "from": "*",            "event": "REQ", "guard": "saturated",                       "to": "Saturated" },
+      { "from": "*",            "event": "REQ", "guard": "default",                          "to": "Responding" }
+    ]
+  },
+  "events_in":  [{ "name": "REQ", "with": ["grid_freq", "freq_nominal", "current_p", "freq_quality", "enable"] }],
+  "events_out": [
+    { "name": "CNF", "with": ["p_setpoint", "delta_p", "freq_error", "dead_band_active", "saturated"] },
+    { "name": "ALM", "with": [] }
+  ],
+  "data_in_schema": [
+    { "name": "grid_freq",     "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uHz" },
+    { "name": "freq_nominal",  "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uHz" },
+    { "name": "current_p",     "rust_type": "i32",  "wire": "valueMicroUnit", "unitCode": "ukW" },
+    { "name": "freq_quality",  "rust_type": "u8",   "wire": "qualityEnum" },
+    { "name": "enable",        "rust_type": "bool", "wire": "boolean" }
+  ],
+  "data_out_schema": [
+    { "name": "p_setpoint",       "rust_type": "i32",  "wire": "valueMicroUnit", "unitCode": "ukW" },
+    { "name": "delta_p",          "rust_type": "i32",  "wire": "valueMicroUnit", "unitCode": "ukW" },
+    { "name": "freq_error",       "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uHz" },
+    { "name": "dead_band_active", "rust_type": "bool", "wire": "boolean" },
+    { "name": "saturated",        "rust_type": "bool", "wire": "boolean" }
+  ],
+  "params_schema": [
+    { "name": "p_rated_micro_kw",    "rust_type": "i32", "description": "Asset rated power in µkW" },
+    { "name": "p_min_micro_kw",      "rust_type": "i32", "description": "Lower clamp (negative = absorption)" },
+    { "name": "p_max_micro_kw",      "rust_type": "i32", "description": "Upper clamp" },
+    { "name": "droop_permille",      "rust_type": "i32", "description": "Droop coefficient × 1000 (50 = 5 %)" },
+    { "name": "dead_band_micro_hz",  "rust_type": "i32", "description": "Symmetric deadband around nominal in µHz" },
+    { "name": "cycle_period_ms",     "rust_type": "u32", "description": "Cycle period in ms" }
+  ],
+  "internal_schema": [
+    { "name": "last_setpoint_micro_kw", "rust_type": "i32",  "checkpoint": true },
+    { "name": "initialized",            "rust_type": "bool", "checkpoint": true }
+  ],
+  "tick_max_emitted": 1,
+  "tick_max_neighbor_msgs": 0,
+  "constraints": {
+    "no_alloc_after_init": true,
+    "no_float": true,
+    "no_std_time": true,
+    "no_rng": true,
+    "deterministic_replay": true
+  },
+  "future_extensions": [
+    "Slew-rate limit (adds Ramping ECC state, max_slew_per_cycle param)",
+    "Asymmetric deadband (separate over- / under-frequency thresholds)",
+    "Q-V (reactive power voltage droop) — separate FBType DROOP_Q_V"
+  ]
+}

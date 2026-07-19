@@ -1,0 +1,59 @@
+{
+  "@context": "https://etzhayyim.com/ns/open-ot/cell/v1",
+  "name": "pid-limited",
+  "description": "IEC 61499 PID_LIMITED reference BFB — saturating PI with anti-windup, fixed-point i32 micro-unit math",
+  "fb_kind": "BFB",
+  "iec61499_fbtype": "PID_LIMITED",
+  "abi": {
+    "init_export": "pid_limited_init",
+    "tick_export": "pid_limited_tick"
+  },
+  "ecc": {
+    "states": ["Idle", "Running", "Saturated", "Alarm"],
+    "initial": "Idle",
+    "transitions": [
+      { "from": "Idle",      "event": "REQ", "guard": "enable && quality<=uncertain",                 "to": "Running" },
+      { "from": "Running",   "event": "REQ", "guard": "saturated",                                    "to": "Saturated" },
+      { "from": "Saturated", "event": "REQ", "guard": "!saturated",                                   "to": "Running" },
+      { "from": "*",         "event": "REQ", "guard": "quality==bad || quality==stale",               "to": "Alarm" },
+      { "from": "*",         "event": "REQ", "guard": "!enable",                                       "to": "Idle" }
+    ]
+  },
+  "events_in":  [{ "name": "REQ", "with": ["pv", "sp", "pv_quality", "enable"] }],
+  "events_out": [
+    { "name": "CNF", "with": ["cv", "error", "saturated"] },
+    { "name": "ALM", "with": [] }
+  ],
+  "data_in_schema": [
+    { "name": "pv",         "rust_type": "i32",  "wire": "valueMicroUnit" },
+    { "name": "sp",         "rust_type": "i32",  "wire": "valueMicroUnit" },
+    { "name": "pv_quality", "rust_type": "u8",   "wire": "qualityEnum" },
+    { "name": "enable",     "rust_type": "bool", "wire": "boolean" }
+  ],
+  "data_out_schema": [
+    { "name": "cv",        "rust_type": "i32",  "wire": "valueMicroUnit" },
+    { "name": "error",     "rust_type": "i32",  "wire": "valueMicroUnit" },
+    { "name": "saturated", "rust_type": "bool", "wire": "boolean" }
+  ],
+  "params_schema": [
+    { "name": "kp_micro",        "rust_type": "i32", "description": "kp * 1e6" },
+    { "name": "ki_micro",        "rust_type": "i32", "description": "ki * 1e6 (per second)" },
+    { "name": "out_min_micro",   "rust_type": "i32", "description": "CV lower clamp in micro-units" },
+    { "name": "out_max_micro",   "rust_type": "i32", "description": "CV upper clamp in micro-units" },
+    { "name": "cycle_period_ms", "rust_type": "u32", "description": "Cycle period in ms" }
+  ],
+  "internal_schema": [
+    { "name": "integral_micro", "rust_type": "i64", "checkpoint": true },
+    { "name": "last_pv_micro",  "rust_type": "i32", "checkpoint": true },
+    { "name": "initialized",    "rust_type": "bool","checkpoint": true }
+  ],
+  "tick_max_emitted": 1,
+  "tick_max_neighbor_msgs": 0,
+  "constraints": {
+    "no_alloc_after_init": true,
+    "no_float": true,
+    "no_std_time": true,
+    "no_rng": true,
+    "deterministic_replay": true
+  }
+}

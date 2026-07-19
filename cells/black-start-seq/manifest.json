@@ -1,0 +1,76 @@
+{
+  "@context": "https://etzhayyim.com/ns/open-ot/cell/v1",
+  "name": "black-start-seq",
+  "description": "IEC 61499 BLACK_START_SEQ BFB — multi-stage black-start sequence FSM (Detecting → StartingGen → EnergizingBus → Syncing → Connected, multi-event REQ + ABORT, latched Alarm)",
+  "fb_kind": "BFB",
+  "iec61499_fbtype": "BLACK_START_SEQ",
+  "abi": {
+    "init_export": "black_start_seq_init",
+    "tick_export": "black_start_seq_tick",
+    "out_event_packing": "u8: 0=none, 1=CNF, 2=TRIP (tie breaker close), 3=ALM"
+  },
+  "ecc": {
+    "states": ["Idle", "Detecting", "StartingGen", "EnergizingBus", "Syncing", "Connected", "Alarm"],
+    "initial": "Idle",
+    "transitions": [
+      { "from": "*",            "event": "ABORT", "guard": "default",                       "to": "Alarm" },
+      { "from": "Alarm",        "event": "REQ",   "guard": "default",                       "to": "Alarm" },
+      { "from": "*",            "event": "REQ",   "guard": "cycle_period_ms==0",            "to": "Alarm" },
+      { "from": "Idle",         "event": "REQ",   "guard": "grid_present || !authorised",   "to": "Idle" },
+      { "from": "Idle",         "event": "REQ",   "guard": "default",                       "to": "Detecting" },
+      { "from": "Detecting",    "event": "REQ",   "guard": "grid_present",                  "to": "Idle" },
+      { "from": "Detecting",    "event": "REQ",   "guard": "dwell==0",                      "to": "StartingGen" },
+      { "from": "StartingGen",  "event": "REQ",   "guard": "gen_ready",                     "to": "EnergizingBus" },
+      { "from": "StartingGen",  "event": "REQ",   "guard": "timer==0",                      "to": "Alarm" },
+      { "from": "EnergizingBus","event": "REQ",   "guard": "bus_voltage_stable",            "to": "Syncing" },
+      { "from": "EnergizingBus","event": "REQ",   "guard": "timer==0",                      "to": "Alarm" },
+      { "from": "Syncing",      "event": "REQ",   "guard": "grid_present && voltage_synced","to": "Connected" },
+      { "from": "Syncing",      "event": "REQ",   "guard": "timer==0",                      "to": "Alarm" },
+      { "from": "Connected",    "event": "REQ",   "guard": "!grid_present",                 "to": "Detecting" }
+    ]
+  },
+  "events_in":  [
+    { "name": "REQ",   "with": ["grid_present", "gen_ready", "bus_voltage_stable", "voltage_synced", "authorised"] },
+    { "name": "ABORT", "with": [] }
+  ],
+  "events_out": [
+    { "name": "CNF",  "with": ["stage", "command", "dwell_remaining_ms", "connected"] },
+    { "name": "TRIP", "with": ["stage", "command", "connected"] },
+    { "name": "ALM",  "with": [] }
+  ],
+  "data_in_schema": [
+    { "name": "grid_present",        "rust_type": "bool", "wire": "boolean" },
+    { "name": "gen_ready",           "rust_type": "bool", "wire": "boolean" },
+    { "name": "bus_voltage_stable",  "rust_type": "bool", "wire": "boolean" },
+    { "name": "voltage_synced",      "rust_type": "bool", "wire": "boolean" },
+    { "name": "authorised",          "rust_type": "bool", "wire": "boolean" }
+  ],
+  "data_out_schema": [
+    { "name": "stage",              "rust_type": "u8",   "wire": "stageEnum" },
+    { "name": "command",            "rust_type": "u8",   "wire": "blackStartCommandEnum" },
+    { "name": "dwell_remaining_ms", "rust_type": "u32",  "wire": "durationMs" },
+    { "name": "connected",          "rust_type": "bool", "wire": "boolean" }
+  ],
+  "params_schema": [
+    { "name": "detect_dwell_ms",  "rust_type": "u32", "description": "Outage-confirmation dwell (ms)" },
+    { "name": "gen_timeout_ms",   "rust_type": "u32", "description": "Max wait for gen_ready (ms)" },
+    { "name": "bus_timeout_ms",   "rust_type": "u32", "description": "Max wait for bus_voltage_stable (ms)" },
+    { "name": "sync_timeout_ms",  "rust_type": "u32", "description": "Max wait for voltage_synced (ms)" },
+    { "name": "cycle_period_ms",  "rust_type": "u32" }
+  ],
+  "internal_schema": [
+    { "name": "stage_timer_ms", "rust_type": "u32",  "checkpoint": true },
+    { "name": "current_stage",  "rust_type": "u8",   "checkpoint": true },
+    { "name": "initialized",    "rust_type": "bool", "checkpoint": true }
+  ],
+  "tick_max_emitted": 1,
+  "tick_max_neighbor_msgs": 0,
+  "constraints": {
+    "no_alloc_after_init": true,
+    "no_float": true,
+    "no_std_time": true,
+    "no_rng": true,
+    "deterministic_replay": true,
+    "latched_alarm_state": true
+  }
+}

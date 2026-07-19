@@ -1,0 +1,39 @@
+[workspace]
+resolver = "2"
+members = [
+    "openot-bfb-rs",
+    "pid-limited",
+    "droop-p-f",
+    "anti-islanding-rocof",
+    "pid-stack-100",
+    "vv-curve",
+    "ltc-tap-fsm",
+    "mppt-perturb-observe",
+    "black-start-seq",
+    "soc-kalman",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/etzhayyim/etzhayyim-root"
+authors = ["etzhayyim.com"]
+
+[workspace.dependencies]
+heapless = { version = "0.9", default-features = false }
+openot-bfb-rs = { path = "openot-bfb-rs", default-features = false }
+
+[workspace.lints.rust]
+# `cfg(kani)` is set by the kani-verifier toolchain when running
+# `cargo kani`; mark it as a known cfg to suppress the standard
+# unexpected_cfgs warning. See cells/*/src/lib.rs `#[cfg(kani)] mod proofs`
+# and .github/workflows/openot-gate-c.yml `kani` job.
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(kani)'] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+overflow-checks = false

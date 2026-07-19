@@ -1,0 +1,91 @@
+{
+  "@context": "https://etzhayyim.com/ns/open-ot/cell/v1",
+  "name": "anti-islanding-rocof",
+  "description": "IEC 61499 ANTI_ISLANDING_ROCOF BFB — grid-tie protection by ROCOF + voltage envelope + frequency envelope, latched trip with RESET event",
+  "fb_kind": "BFB",
+  "iec61499_fbtype": "ANTI_ISLANDING_ROCOF",
+  "abi": {
+    "init_export": "anti_islanding_rocof_init",
+    "tick_export": "anti_islanding_rocof_tick",
+    "out_event_packing": "u16 packed: low byte = first event code, high byte = second event code (1=CNF, 2=TRIP, 3=ALM, 0=none)"
+  },
+  "ecc": {
+    "states": ["Idle", "Monitoring", "Warning", "Tripped", "Alarm"],
+    "initial": "Idle",
+    "transitions": [
+      { "from": "*",          "event": "RESET", "guard": "enable",                       "to": "Monitoring" },
+      { "from": "*",          "event": "RESET", "guard": "!enable",                      "to": "Idle" },
+      { "from": "*",          "event": "REQ",   "guard": "freq.q==bad||voltage.q==bad",  "to": "Alarm" },
+      { "from": "*",          "event": "REQ",   "guard": "!enable",                      "to": "Idle" },
+      { "from": "Tripped",    "event": "REQ",   "guard": "default",                      "to": "Tripped" },
+      { "from": "Idle",       "event": "REQ",   "guard": "!initialized",                 "to": "Monitoring" },
+      { "from": "*",          "event": "REQ",   "guard": "rocof_count >= window",        "to": "Tripped" },
+      { "from": "*",          "event": "REQ",   "guard": "voltage_count >= window",      "to": "Tripped" },
+      { "from": "*",          "event": "REQ",   "guard": "freq_count >= window",         "to": "Tripped" },
+      { "from": "*",          "event": "REQ",   "guard": "any_count > 0",                "to": "Warning" },
+      { "from": "*",          "event": "REQ",   "guard": "default",                      "to": "Monitoring" }
+    ]
+  },
+  "events_in":  [
+    { "name": "REQ",   "with": ["grid_freq", "freq_nominal", "grid_voltage", "voltage_nominal", "freq_quality", "voltage_quality", "enable"] },
+    { "name": "RESET", "with": ["enable"] }
+  ],
+  "events_out": [
+    { "name": "CNF",  "with": ["trip", "trip_reason", "rocof", "voltage_dev", "freq_dev", "counts"] },
+    { "name": "TRIP", "with": ["trip", "trip_reason", "counts"] },
+    { "name": "ALM",  "with": [] }
+  ],
+  "data_in_schema": [
+    { "name": "grid_freq",        "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uHz" },
+    { "name": "freq_nominal",     "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uHz" },
+    { "name": "grid_voltage",     "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uV" },
+    { "name": "voltage_nominal",  "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uV" },
+    { "name": "freq_quality",     "rust_type": "u8",   "wire": "qualityEnum" },
+    { "name": "voltage_quality",  "rust_type": "u8",   "wire": "qualityEnum" },
+    { "name": "enable",           "rust_type": "bool", "wire": "boolean" }
+  ],
+  "data_out_schema": [
+    { "name": "trip",                       "rust_type": "bool", "wire": "boolean" },
+    { "name": "trip_reason",                "rust_type": "u8",   "wire": "tripReasonEnum" },
+    { "name": "rocof_micro_hz_per_s",       "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uHz/s" },
+    { "name": "voltage_deviation_milli_pct","rust_type": "i32",  "wire": "valueMilliPct",  "unitCode": "milli-percent" },
+    { "name": "freq_deviation_micro_hz",    "rust_type": "i64",  "wire": "valueMicroUnit", "unitCode": "uHz" },
+    { "name": "rocof_violation_count",      "rust_type": "u8",   "wire": "counter" },
+    { "name": "voltage_violation_count",    "rust_type": "u8",   "wire": "counter" },
+    { "name": "freq_violation_count",       "rust_type": "u8",   "wire": "counter" }
+  ],
+  "params_schema": [
+    { "name": "rocof_threshold_micro_hz_per_s", "rust_type": "i64", "description": "ROCOF threshold in uHz/s (500_000 = 0.5 Hz/s)" },
+    { "name": "rocof_window_samples",           "rust_type": "u32", "description": "Consecutive samples above ROCOF to trip" },
+    { "name": "voltage_min_micro_v",            "rust_type": "i64", "description": "Voltage envelope lower bound in uV" },
+    { "name": "voltage_max_micro_v",            "rust_type": "i64", "description": "Voltage envelope upper bound in uV" },
+    { "name": "voltage_window_samples",         "rust_type": "u32" },
+    { "name": "freq_min_micro_hz",              "rust_type": "i64", "description": "Frequency envelope lower bound in uHz" },
+    { "name": "freq_max_micro_hz",              "rust_type": "i64", "description": "Frequency envelope upper bound in uHz" },
+    { "name": "freq_window_samples",            "rust_type": "u32" },
+    { "name": "cycle_period_ms",                "rust_type": "u32" }
+  ],
+  "internal_schema": [
+    { "name": "last_freq_micro_hz",       "rust_type": "i64",  "checkpoint": true },
+    { "name": "rocof_violation_count",    "rust_type": "u32",  "checkpoint": true },
+    { "name": "voltage_violation_count",  "rust_type": "u32",  "checkpoint": true },
+    { "name": "freq_violation_count",     "rust_type": "u32",  "checkpoint": true },
+    { "name": "last_trip_reason",         "rust_type": "u8",   "checkpoint": true },
+    { "name": "initialized",              "rust_type": "bool", "checkpoint": true }
+  ],
+  "tick_max_emitted": 2,
+  "tick_max_neighbor_msgs": 0,
+  "constraints": {
+    "no_alloc_after_init": true,
+    "no_float": true,
+    "no_std_time": true,
+    "no_rng": true,
+    "deterministic_replay": true,
+    "latched_trip_state": true
+  },
+  "future_extensions": [
+    "Cross-cell typed neighbor_msgs to bus-tie controller (currently emitted via orchestrator-mediated path)",
+    "Phase-jump (vector-shift) detection — adds 4th violation counter",
+    "Rolling-mean ROCOF (multi-sample average) instead of single-sample diff"
+  ]
+}

@@ -1,0 +1,9 @@
+;; Scoped bb.edn for the open-ot orchestrator clj/cljc port (ADR-2606280030).
+;; The cljc ports use only babashka built-ins (cheshire, java.* interop) — no
+;; langgraph-clj / langchain-clj dep is needed because the LangGraph demos are
+;; NOT ported (they are wasmtime + LangGraph bound; kept as `.py`). Repo-root
+;; bb.edn is intentionally untouched.
+{:paths ["src" "test"]
+ :tasks
+ {test {:doc  "Run the clojure.test suite (wasm-free subset)."
+        :task (apply clojure.core/load-file ["run_tests.clj"])}}}

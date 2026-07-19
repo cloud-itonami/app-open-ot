@@ -1,0 +1,16 @@
+[package]
+name = "device-loop-host"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Device-in-the-loop host — load a real open-ot BFB cell (the deployment WASM artefact) in Wasmtime and expose a line protocol (LOAD/INIT/TICK) so an external plant simulation can close the control loop against the real device tier. Sibling of gate-a-rig (which measures latency on a fixed workload; this one hands the tick to a live closed loop)."
+
+[[bin]]
+name = "device-loop-host"
+path = "src/main.rs"
+
+[dependencies]
+wasmtime = { version = "46", default-features = false, features = ["cranelift", "runtime"] }
+anyhow = "1"

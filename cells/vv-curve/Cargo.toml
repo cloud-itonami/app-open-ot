@@ -1,0 +1,21 @@
+[package]
+name = "vv-curve"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "IEC 61499 VV_CURVE BFB — piecewise-linear Volt-VAR curve lookup for inverter Q control (IEEE 1547 / IEC 62116 default-curve compatible)"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+openot-bfb-rs.workspace = true
+
+[features]
+default = ["std"]
+std = ["openot-bfb-rs/std"]
+
+[lints]
+workspace = true

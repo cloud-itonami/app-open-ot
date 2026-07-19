@@ -1,0 +1,32 @@
+[project]
+name = "open-ot-orchestrator"
+version = "0.1.0"
+description = "Pregel orchestrator demos for etzhayyim-project-open-ot — minimal Python BSP runner + LangGraph integration"
+requires-python = ">=3.11,<3.14"
+license = { text = "Apache-2.0" }
+dependencies = [
+  # WASM runtime — loads cells/<name>/target/wasm32-unknown-unknown/release/<name>.wasm.
+  "wasmtime>=24.0",
+  # LangGraph for #3b. Pinned to >=0.2 to match `40-engine/kotoba/crates/kotoba-kotodama/py` convention.
+  "langgraph>=0.2.0",
+  # SQLAlchemy Core (per ADR-2605080300) for the OpenOtCheckpointer demo.
+  # sqlite stand-in for RisingWave; same Core API, real deployment swaps
+  # the dialect string + driver to asyncpg + RW DSN.
+  "sqlalchemy>=2.0",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/open_ot_orchestrator"]

@@ -1,0 +1,21 @@
+[package]
+name = "soc-kalman"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "IEC 61499 SOC_KALMAN BFB — battery State-of-Charge estimator via Coulomb counter + OCV-SOC correction (simplified Kalman approach). Used by :loop:bess-charge-discharge per PROTOTYPE-MICROGRID §13.2."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+openot-bfb-rs.workspace = true
+
+[features]
+default = ["std"]
+std = ["openot-bfb-rs/std"]
+
+[lints]
+workspace = true

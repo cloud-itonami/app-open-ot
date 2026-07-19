@@ -1,0 +1,23 @@
+[package]
+name = "openot-bfb-rs"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "IEC 61499 Basic Function Block trait surface for open-ot WASM cells"
+
+[lib]
+crate-type = ["rlib"]
+
+[dependencies]
+heapless.workspace = true
+
+[features]
+# `std` is on by default so `cargo check` / `cargo test` work on the host.
+# Embedded builds opt out: `cargo build --release --no-default-features --target wasm32-wasi`.
+default = ["std"]
+std = []
+
+[lints]
+workspace = true
