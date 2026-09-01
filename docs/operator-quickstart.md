@@ -68,9 +68,9 @@ not exist until §3 has been run. The split is:
 
 | Outcome | Count | Modules |
 |---|---|---|
-| passed | 14 | `test_generated_byte_equivalence.py` (10), `test_checkpointer.py` (3), `test_pregel_runner.py` (1) |
-| skipped | 25 | `test_pregel_runner.py`, `test_microgrid_langgraph.py`, `test_microgrid_islanding_langgraph.py`, `test_microgrid_async_langgraph.py`, `test_checkpointer.py` |
-| **failed** | 26 | `test_microgrid_bess_langgraph.py` (7), `test_microgrid_pv_mppt_langgraph.py` (7), `test_microgrid_volt_var_langgraph.py` (7), `test_microgrid_islanding_blackstart_langgraph.py` (5) |
+| passed | 14 | `tests/test_generated_byte_equivalence.py` (10), `tests/test_checkpointer.py` (3), `tests/test_pregel_runner.py` (1) |
+| skipped | 25 | `tests/test_pregel_runner.py`, `tests/test_microgrid_langgraph.py`, `tests/test_microgrid_islanding_langgraph.py`, `tests/test_microgrid_async_langgraph.py`, `tests/test_checkpointer.py` |
+| **failed** | 26 | `tests/test_microgrid_bess_langgraph.py` (7), `tests/test_microgrid_pv_mppt_langgraph.py` (7), `tests/test_microgrid_volt_var_langgraph.py` (7), `tests/test_microgrid_islanding_blackstart_langgraph.py` (5) |
 
 **Known gap — the 26 failures are a missing guard, not a missing feature.** Five
 test modules declare
