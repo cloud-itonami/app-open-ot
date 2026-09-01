@@ -1,6 +1,10 @@
 # open-ot.etzhayyim.com — WASM-native PLC + Distributed Logic Controller (OSS)
 
-**Status**: spec / research only (2026-05-15). No runtime artefacts yet (no `kotodama.jsonld`, no `src/`, no `wrangler.jsonc`). Apache-2.0.
+**Status**: spec / research. No deployed runtime (no `kotodama.jsonld`, no `wrangler.jsonc`). Apache-2.0.
+
+This repository was split out of the `etzhayyim/root` monorepo (`migration.edn`).
+**Paths below are repository-relative unless marked `etzhayyim/root:`** — the
+monorepo directory `60-apps/etzhayyim-project-open-ot/` *is* this repository root.
 
 Reference implementation for **WASM-based industrial PLC and DLC** in non-safety-rated control: process monitoring, energy management, building automation, water / wastewater non-SIL, lab and agricultural automation.
 
@@ -8,17 +12,18 @@ Reference implementation for **WASM-based industrial PLC and DLC** in non-safety
 
 | 文書 | パス |
 |---|---|
-| Architecture decision | `90-docs/adr/2605151200-open-ot-wasm-plc-dlc.md` |
-| Detailed spec (NSIDs / FB API / Zenoh schemas) | `60-apps/etzhayyim-project-open-ot/SPEC.md` |
-| Lexicon contract (17 NSID, authored 2026-05-15) | `00-contracts/lexicons/com/etzhayyim/apps/openOt/*.json` |
-| BFB cells (Cargo workspace, 3 cells, 29 tests) | `60-apps/etzhayyim-project-open-ot/cells/` |
-| Risk-1 Gate A Wasmtime harness | `60-apps/etzhayyim-project-open-ot/risk1/gate-a-rig/` |
-| Pregel orchestrator demos (Python, 3 variants, 25 tests) | `60-apps/etzhayyim-project-open-ot/orchestrator/` |
+| Operator quickstart (what runs, what does not) | `docs/operator-quickstart.md` |
+| Detailed spec (NSIDs / FB API / Zenoh schemas) | `SPEC.md` |
+| BFB cells (Cargo workspace, 9 cells + trait crate) | `cells/` |
+| Risk-1 Gate A Wasmtime harness | `risk1/gate-a-rig/` |
+| Pregel orchestrator demos (Python, 8 modules) + `.cljc` port | `orchestrator/` |
 | SPEC §6 checkpointer (sqlite stand-in for RW) | `orchestrator/src/open_ot_orchestrator/checkpointer.py` |
-| Hardware reference spec (Mimi / Te / Atama) | `60-apps/etzhayyim-project-open-ot/cad-spec/` |
-| NixOS module spec for Atama edge controller | `60-apps/etzhayyim-project-open-ot/nixos/atama/` |
-| Lexicon × manifest CI validator | `70-tools/scripts/open-ot/validate-cell-abi.py` (12 tests) |
-| Microgrid prototype scope | `60-apps/etzhayyim-project-open-ot/PROTOTYPE-MICROGRID.md` |
+| Hardware reference spec (Mimi / Te / Atama) | `cad-spec/` |
+| NixOS module spec for Atama edge controller | `nixos/atama/` |
+| Microgrid prototype scope | `PROTOTYPE-MICROGRID.md` |
+| Architecture decision (ADR-2605151200) | `etzhayyim/root:90-docs/adr/2605151200-open-ot-wasm-plc-dlc.edn` — **`.edn`, not `.md`** |
+| Lexicon × manifest CI validator | `etzhayyim/root:70-tools/scripts/open-ot/validate-cell-abi.py` |
+| Lexicon contract (`com.etzhayyim.apps.openOt.*`) | **not reachable** — see `docs/operator-quickstart.md` §4 |
 
 ## Scope summary
 
