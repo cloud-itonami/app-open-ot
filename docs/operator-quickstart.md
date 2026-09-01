@@ -10,7 +10,8 @@ vendor, that is said plainly rather than hidden behind a command that will fail.
 
 `open-ot` is a **specification plus reference cells** for a WASM-native PLC /
 Distributed Logic Controller. It is not a deployed runtime and there is nothing
-to install. Three things are actually executable today:
+to install. It has three executable layers, and only one of them runs without a
+toolchain this repository does not vendor:
 
 | Layer | Directory | Runs today? |
 |---|---|---|
@@ -38,7 +39,7 @@ Ran 16 tests containing 53 assertions.
 ```
 
 Exit code `0`. `bb test` runs the same suite through `bb.edn` and prints the
-same three lines. This exercises the `.cljc` port of the droop codec and the Pregel
+same summary. This exercises the `.cljc` port of the droop codec and the Pregel
 runner (`src/open_ot_orchestrator/droop_codec.cljc`,
 `src/open_ot_orchestrator/pregel_runner.cljc`) — the parts of the orchestrator
 that do not touch WASM.
@@ -163,7 +164,30 @@ tests observed passing.
   `murakumoFleet`. The NSID surface itself is still specified, in `SPEC.md` §2;
   the JSON artefacts are not where any document in this repo says they are.
 
-## 5. Known documentation gaps not fixed by this file
+## 5. Checking that this file is still true
+
+The claims above are machine-checkable, and checking them is one command:
+
+```bash
+nbb docs/verify-quickstart.cljs --root .
+```
+
+It walks every runnable step in this file, compares the real output against
+what is written here, and cross-checks the cell inventory and the relative
+links in `README.md`. Exit `0` = every claim held (35 checks as of
+2026-09-01), `1` = a claim was contradicted, `2` = it could not measure — a
+distinct code, so "I could not check" never comes back looking like "I checked
+and it was fine". §2's pytest counts describe a machine with no built cell
+artefacts; when the artefacts are present those checks report `n/a` rather than
+passing.
+
+Each check has been shown to fire for the reason it names: misquoting the
+pytest counts, overstating a cell's `#[test]` count, letting a monorepo path
+back into `README.md`, breaking a relative link, and removing a
+`requires_wasm` guard each turn it red, and each names the thing that was
+broken.
+
+## 6. Known documentation gaps not fixed by this file
 
 - `CLAUDE.md` and `SPEC.md` still carry monorepo-relative paths
   (`60-apps/etzhayyim-project-open-ot/...`) from before the split.
