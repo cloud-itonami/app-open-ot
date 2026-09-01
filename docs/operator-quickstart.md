@@ -179,7 +179,15 @@ links in `README.md`. Exit `0` = every claim held (35 checks as of
 distinct code, so "I could not check" never comes back looking like "I checked
 and it was fine". §2's pytest counts describe a machine with no built cell
 artefacts; when the artefacts are present those checks report `n/a` rather than
-passing.
+passing, and a run that executes fewer than 20 checks refuses rather than
+reporting a pass.
+
+One residual hole, named rather than papered over: if the checker itself fails
+to *load* — a syntax error in the file — `nbb` exits `1`, the same code as a
+contradicted claim. **Read exit `1` as a finding only if the output contains a
+`CHECKED` line.** Without it, the checker never ran. This happened once while
+the file was being written (an illegal symbol name), and it is the reason the
+three-code contract above exists at all.
 
 Each check has been shown to fire for the reason it names: misquoting the
 pytest counts, overstating a cell's `#[test]` count, letting a monorepo path

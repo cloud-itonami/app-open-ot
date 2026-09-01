@@ -42,7 +42,7 @@
 (defn check! [id ok? detail]
   (swap! results conj {:id id :ok ok? :detail detail})
   (println (if ok? "  ok  " "  FAIL") id "—" detail))
-(defn n/a! [id detail]
+(defn not-applicable! [id detail]
   (swap! skipped conj {:id id :detail detail})
   (println "  n/a " id "—" detail))
 
@@ -85,7 +85,7 @@
       out (:out r)
       m (re-find #"(\d+) failed, (\d+) passed, (\d+) skipped" out)]
   (if cells-built?
-    (n/a! :qs2/counts "cells are built — §2 describes the cargo-less state")
+    (not-applicable! :qs2/counts "cells are built — §2 describes the cargo-less state")
     (do
       (check! :qs2/nonzero-exit (not= 0 (:exit r))
               (str "pytest exits nonzero without cells built, exit=" (:exit r)))
@@ -102,7 +102,7 @@
 (let [r (sh (str root "/orchestrator") "uv run --frozen pytest --no-header --tb=no -rA -q")
       out (:out r)
       _ (when cells-built?
-          (n/a! :qs2/failed-modules "cells are built — §2 describes the cargo-less state"))
+          (not-applicable! :qs2/failed-modules "cells are built — §2 describes the cargo-less state"))
       tally (reduce (fn [acc line]
                       (if-let [[_ st mod] (re-find #"^(PASSED|FAILED) (tests/[^:]+)" line)]
                         (update-in acc [st mod] (fnil inc 0)) acc))
@@ -126,7 +126,7 @@
       m (re-find #"(\d+) passed, (\d+) skipped" (:out r))]
   (check! :qs2/targeted-exit-zero (= 0 (:exit r)) (str "targeted pytest exit=" (:exit r)))
   (if cells-built?
-    (n/a! :qs2/targeted-counts "cells are built — §2 describes the cargo-less state")
+    (not-applicable! :qs2/targeted-counts "cells are built — §2 describes the cargo-less state")
     (do (check! :qs2/targeted-counts (= (vec (rest m)) ["13" "4"])
                 (str "targeted run = " (pr-str (first m))))
         (check! :qs2/targeted-quoted
