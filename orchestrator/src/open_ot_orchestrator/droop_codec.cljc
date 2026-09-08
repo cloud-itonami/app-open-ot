@@ -18,7 +18,7 @@
   NOTE: this is the substrate-agnostic *engineering layer* only. The actual
   cell math runs inside the Rust→WASM `droop_p_f.wasm` artefact loaded by
   `cell_loader.py` (wasmtime, no babashka binding — kept as `.py`)."
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 ;; ---------------------------------------------------------------------------
 ;; little-endian integer codec over a byte vector (unsigned ints 0..255)
