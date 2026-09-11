@@ -1,6 +1,6 @@
-#!/usr/bin/env bb
+#!/usr/bin/env kbb
 ;; Test runner for the open-ot orchestrator clj/cljc port (ADR-2606280030).
-;; Repo rule: clj runner, NOT a .sh. Run with `bb run_tests.clj` or `bb test`.
+;; Repo rule: clj runner, NOT a .sh. Run with `kbb run_tests.cljk` or `kbb -M:test`.
 (require '[clojure.test :as t]
          'open-ot-orchestrator.core-test)
 

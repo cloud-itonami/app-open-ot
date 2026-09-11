@@ -26,7 +26,7 @@ Start with the third one. It is the only step with no prerequisites beyond a
 
 ```bash
 cd orchestrator
-bb run_tests.clj
+kbb run_tests.cljk
 ```
 
 Actual output:
@@ -38,7 +38,7 @@ Ran 16 tests containing 53 assertions.
 0 failures, 0 errors.
 ```
 
-Exit code `0`. `bb test` runs the same suite through `bb.edn` and prints the
+Exit code `0`. `kbb -M:test` runs the same suite through `bb.edn` and prints the
 same summary. This exercises the `.cljc` port of the droop codec and the Pregel
 runner (`src/open_ot_orchestrator/droop_codec.cljc`,
 `src/open_ot_orchestrator/pregel_runner.cljc`) — the parts of the orchestrator
@@ -169,7 +169,7 @@ tests observed passing.
 The claims above are machine-checkable, and checking them is one command:
 
 ```bash
-nbb docs/verify-quickstart.cljk --root .
+kbb --backend sci docs/verify-quickstart.cljk --root .
 ```
 
 It walks every runnable step in this file, compares the real output against

@@ -69,7 +69,7 @@ root *is* that directory**.
 The full path needs a Rust toolchain. **One step does not** — start there:
 
 ```bash
-cd orchestrator && bb run_tests.clj    # 16 tests, 53 assertions, 0 failures
+cd orchestrator && kbb run_tests.cljk    # 16 tests, 53 assertions, 0 failures
 ```
 
 Two WASM targets exist and are not interchangeable: `wasm32-unknown-unknown`
