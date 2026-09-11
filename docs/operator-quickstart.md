@@ -169,7 +169,7 @@ tests observed passing.
 The claims above are machine-checkable, and checking them is one command:
 
 ```bash
-nbb docs/verify-quickstart.cljs --root .
+nbb docs/verify-quickstart.cljk --root .
 ```
 
 It walks every runnable step in this file, compares the real output against

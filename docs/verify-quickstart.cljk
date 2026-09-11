@@ -1,7 +1,7 @@
 ;; Walk docs/operator-quickstart.md and check each of its claims against what
 ;; the repository actually does, right now.
 ;;
-;;   nbb docs/verify-quickstart.cljs --root .
+;;   nbb docs/verify-quickstart.cljk --root .
 ;;
 ;; Exit 0 = every claim held. 1 = a claim was contradicted. 2 = REFUSED — could
 ;; not measure. 2 is deliberately neither 0 nor 1: "I could not check" must not
