@@ -1,7 +1,7 @@
 ;; Walk docs/operator-quickstart.md and check each of its claims against what
 ;; the repository actually does, right now.
 ;;
-;;   nbb docs/verify-quickstart.cljk --root .
+;;   kbb --backend sci docs/verify-quickstart.cljk --root .
 ;;
 ;; Exit 0 = every claim held. 1 = a claim was contradicted. 2 = REFUSED — could
 ;; not measure. 2 is deliberately neither 0 nor 1: "I could not check" must not
@@ -58,10 +58,10 @@
 
 (println "── walking docs/operator-quickstart.md against" root)
 
-;; §1 — bb run_tests.clj
-(let [r (sh (str root "/orchestrator") "bb run_tests.clj")
+;; §1 — kbb run_tests.cljk
+(let [r (sh (str root "/orchestrator") "kbb run_tests.cljk")
       claimed-lines ["Ran 16 tests containing 53 assertions." "0 failures, 0 errors."]]
-  (check! :qs1/exit-zero (= 0 (:exit r)) (str "bb run_tests.clj exit=" (:exit r)))
+  (check! :qs1/exit-zero (= 0 (:exit r)) (str "kbb run_tests.cljk exit=" (:exit r)))
   (doseq [l claimed-lines]
     (check! (keyword "qs1" (str "line/" (hash l)))
             (str/includes? (:out r) l)
@@ -71,11 +71,11 @@
           "quickstart quotes those exact lines"))
 
 ;; §1 — bb test is claimed to print the same three lines
-(let [r (sh (str root "/orchestrator") "bb test")]
-  (check! :qs1/bb-task-exit-zero (= 0 (:exit r)) (str "bb test exit=" (:exit r)))
+(let [r (sh (str root "/orchestrator") "kbb -M:test")]
+  (check! :qs1/bb-task-exit-zero (= 0 (:exit r)) (str "kbb -M:test exit=" (:exit r)))
   (check! :qs1/bb-task-same-output
           (str/includes? (:out r) "Ran 16 tests containing 53 assertions.")
-          "bb test prints the same assertion line"))
+          "kbb -M:test prints the same assertion line"))
 
 ;; §2 — uv sync --frozen then pytest
 (let [r (sh (str root "/orchestrator") "uv sync --frozen")]
