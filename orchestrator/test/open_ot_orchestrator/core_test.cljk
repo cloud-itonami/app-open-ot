@@ -9,7 +9,7 @@
   that exercises the SAME runner / checkpointer logic (super-step semantics,
   per-step skip, monotonic stream, replay determinism, params-rev guard,
   multi-loop independence)."
-  (:require [clojure.test :refer [deftest is testing run-tests]]
+  (:require [kotoba.lang.error :as kerror] [clojure.test :refer [deftest is testing run-tests]]
             [open-ot-orchestrator.droop-codec :as codec]
             [open-ot-orchestrator.pregel-runner :as pr]
             [open-ot-orchestrator.checkpointer :as cp]))
@@ -132,11 +132,11 @@
 (deftest test-loop-runner-rejects-duplicate-dids
   (let [c {:did "x" :loader (mock-droop-loader) :params-bytes []
            :internal-size 0 :data-in-size 0 :data-out-size 0}]
-    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"duplicate cell DID"
+    (is (thrown-with-msg? kerror/ExceptionInfo #"duplicate cell DID"
           (pr/make-loop-runner [c c])))))
 
 (deftest test-empty-loop-rejected
-  (is (thrown? clojure.lang.ExceptionInfo (pr/make-loop-runner []))))
+  (is (thrown? kerror/ExceptionInfo (pr/make-loop-runner []))))
 
 (deftest test-single-cell-step
   (let [r (build-freq-droop-loop [["did:droop-test" 1000.0]])]
@@ -211,7 +211,7 @@
     (let [cp (last (pr/checkpoints ra))
           rb (build-freq-droop-loop [["b" 500.0]])]
       (pr/initialize! rb)
-      (is (thrown? clojure.lang.ExceptionInfo
+      (is (thrown? kerror/ExceptionInfo
             (pr/restore-from-checkpoint! rb cp))))))
 
 ;; ---------------------------------------------------------------------------
@@ -264,7 +264,7 @@
     ;; resume with different params (500 kW) → params_rev differs
     (let [r2 (build-freq-droop-loop [["a" 500.0]])]
       (pr/initialize! r2)
-      (is (thrown-with-msg? clojure.lang.ExceptionInfo #"params_rev mismatch"
+      (is (thrown-with-msg? kerror/ExceptionInfo #"params_rev mismatch"
             (cp/restore-runner-from-checkpointer s loop-did (pr/cells r2)))))))
 
 (deftest test-multi-loop-independence
