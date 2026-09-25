@@ -17,9 +17,8 @@
     - checkpoint rows keyed by (loop-did, super-step)
 
   bytevec = vector of unsigned-byte ints 0..255."
-  (:require [cheshire.core :as json])
+  (:require [kotoba.bytes :as kbytes] [cheshire.core :as json])
   (:import [java.security MessageDigest]
-           [java.util Base64]
            [java.time Instant]))
 
 ;; ---------------------------------------------------------------------------
@@ -33,10 +32,10 @@
   (mapv (fn [b] (bit-and (int b) 0xFF)) ba))
 
 (defn- b64-encode [bytevec]
-  (.encodeToString (Base64/getEncoder) (->byte-array* bytevec)))
+  (kbytes/base64-encode (->byte-array* bytevec)))
 
 (defn- b64-decode [^String s]
-  (byte-array-> (.decode (Base64/getDecoder) s)))
+  (byte-array-> (kbytes/base64-decode-bytes s)))
 
 (defn- sha256-hex [^bytes ba]
   (let [md (MessageDigest/getInstance "SHA-256")]
@@ -64,7 +63,7 @@
   [cells]
   (let [buf (java.io.ByteArrayOutputStream.)]
     (doseq [did (sort (keys cells))]
-      (.write buf (.getBytes ^String did "UTF-8"))
+      (.write buf (kbytes/utf8-bytes ^String did))
       (.write buf (int (byte \:)))
       (.write buf (->byte-array* (:params-bytes (get cells did))))
       (.write buf (int (byte \;))))
