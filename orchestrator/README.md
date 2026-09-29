@@ -91,5 +91,5 @@ Math check (5 % droop → 1 % freq dev = 20 % rated power change):
 ## What this is **not**
 
 - **Not production**: in-memory checkpointer only. Real LangGraph runs inside the etzhayyim LangServer pod (per ADR-2605080600) on a Giemon Atama (per `cad-spec/giemon-atama/`) with the RisingWave checkpointer (per ADR-2605082100).
-- **Not WAMR**: this loads cells via Wasmtime (Python). Embedded path remains WAMR AOT on Zephyr (Mimi/Te). See `cells/CLAUDE.md` for why each runtime fits its tier.
+- **Not WAMR**: this loads cells via Wasmtime (Python). Embedded path remains WAMR AOT on Zephyr (Mimi/Te). See `cells/AGENTS.md` for why each runtime fits its tier.
 - **Not the full microgrid**: only `:loop:freq-droop` with 2 BESS cells. The other 6 loops in `PROTOTYPE-MICROGRID.md` (mppt / bess / volt-var / islanding / dr / peak-shave-economic) are scoped post-Risk-1.

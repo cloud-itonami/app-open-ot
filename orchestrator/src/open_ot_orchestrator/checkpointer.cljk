@@ -3,7 +3,7 @@
   `vertex_open_ot_loop_checkpoint` / `vertex_open_ot_signal_change` audit +
   resume layer (ADR-2606280030, ADR-2605151200 §6).
 
-  SUBSTRATE BOUNDARY (CLAUDE.md): the Python original used SQLAlchemy Core
+  SUBSTRATE BOUNDARY (AGENTS.md): the Python original used SQLAlchemy Core
   over sqlite as a stand-in for RisingWave. RisingWave / Postgres is a
   PROHIBITED canonical-state backend in this repo — state belongs on the
   kotoba Datom log. So the persistence backend is modelled as an **injectable

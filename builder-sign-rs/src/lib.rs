@@ -1,7 +1,7 @@
 //! builder-sign-rs — open-ot builder signing library.
 //!
 //! Per SPEC §9 build → sign → pin pipeline. Replaces the
-//! `scripts/builder-sign.sh` stub referenced in `cells/CLAUDE.md`.
+//! `scripts/builder-sign.sh` stub referenced in `cells/AGENTS.md`.
 //!
 //! Crypto:
 //! - Hash: BLAKE3 (b3sum-compatible, 256-bit)

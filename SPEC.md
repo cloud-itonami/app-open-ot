@@ -47,7 +47,7 @@ Queries (read):
 
 All NSIDs in `camelCase` per platform identifier convention.
 
-**Status (2026-05-15)**: All 17 Lexicon JSON files authored under `00-contracts/lexicons/com/etzhayyim/apps/openOt/`. Bundle (`50-infra/cloudflare/workers/atproto/src/lexicon/bundled.ts`) and registry (`50-infra/cloudflare/workers/atproto/src/generated/lexicon-registry.gen.ts`, `10-protocol/xrpc/src/lexicon-types.gen.ts`) regenerated. **Wrangler deploy deferred** until the open-ot Worker has handlers — no point shipping a bundle whose new NSIDs have no responder. When implementation begins: `cd 50-infra/cloudflare/workers/atproto && npx wrangler deploy` (per CLAUDE.md root rule). All values use `integer` (no `number` per AT Lexicon float-prohibition); analog values are scaled to micro-units (1e-6) with UCUM `unitCode` separately; super-step rate uses `millihertz` (1000 = 1 Hz). Array-of-object always uses `items: { type: "ref", "ref": "#typeName" }` per the AT Lexicon validator.
+**Status (2026-05-15)**: All 17 Lexicon JSON files authored under `00-contracts/lexicons/com/etzhayyim/apps/openOt/`. Bundle (`50-infra/cloudflare/workers/atproto/src/lexicon/bundled.ts`) and registry (`50-infra/cloudflare/workers/atproto/src/generated/lexicon-registry.gen.ts`, `10-protocol/xrpc/src/lexicon-types.gen.ts`) regenerated. **Wrangler deploy deferred** until the open-ot Worker has handlers — no point shipping a bundle whose new NSIDs have no responder. When implementation begins: `cd 50-infra/cloudflare/workers/atproto && npx wrangler deploy` (per AGENTS.md root rule). All values use `integer` (no `number` per AT Lexicon float-prohibition); analog values are scaled to micro-units (1e-6) with UCUM `unitCode` separately; super-step rate uses `millihertz` (1000 = 1 Hz). Array-of-object always uses `items: { type: "ref", "ref": "#typeName" }` per the AT Lexicon validator.
 
 ## 3. Function-block API (Rust, Tier 1) — IEC 61499-compatible
 
@@ -187,7 +187,7 @@ The orchestrator host **must** run CPython 3.11+ / Granian per ADR-2605080600. Q
 | Control plane | XRPC + MCP → atproto | NSIDs above | seconds (eventual) |
 | Telemetry persist | Zenoh aggregator pod → XRPC `recordTelemetryBatch` → RW | batched per-second | seconds |
 
-Wire encoding: CBOR for Zenoh payloads, AT Protocol Lexicon JSON for atproto records. (No `type: "number"` — see CLAUDE.md root rule on AT Lexicon float.)
+Wire encoding: CBOR for Zenoh payloads, AT Protocol Lexicon JSON for atproto records. (No `type: "number"` — see AGENTS.md root rule on AT Lexicon float.)
 
 ## 6. RisingWave projection (read tier)
 
@@ -202,7 +202,7 @@ Pregel orchestrator state (per ADR-2605082100):
 
 Telemetry:
 
-- `vertex_open_ot_reading` (`signal_did`, `ts`, `value_f64`, `quality`, `aggregator_did`) — high-volume; bulk ingest uses `SET dml_rate_limit` per CLAUDE.md `[[conventions]] rw-bulk-insert-throttle`.
+- `vertex_open_ot_reading` (`signal_did`, `ts`, `value_f64`, `quality`, `aggregator_did`) — high-volume; bulk ingest uses `SET dml_rate_limit` per AGENTS.md `[[conventions]] rw-bulk-insert-throttle`.
 
 Pre-computed MVs (streaming):
 

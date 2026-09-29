@@ -38,7 +38,7 @@ in {
       type = lib.types.int;
       default = 50000;
       description = ''
-        `SET dml_rate_limit` per CLAUDE.md `[[conventions]]
+        `SET dml_rate_limit` per AGENTS.md `[[conventions]]
         rw-bulk-insert-throttle`. Telemetry batches must throttle so a
         bursty Mimi cluster doesn't trip the RW per-account quota
         (incident 2026-04-25, ADR-0048).

@@ -8,7 +8,7 @@ builder-sign sign cell.aot         →   blake3 CID + Ed25519 signature   →
 XRPC com.etzhayyim.apps.openOt.pinModule →   atproto record links cell DID → CID + sig
 ```
 
-Replaces the `scripts/builder-sign.sh` stub referenced in `cells/CLAUDE.md` (removed 2026-05-20). Per Gate C report §2.5.
+Replaces the `scripts/builder-sign.sh` stub referenced in `cells/AGENTS.md` (removed 2026-05-20). Per Gate C report §2.5.
 
 ## Status
 

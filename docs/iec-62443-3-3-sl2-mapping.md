@@ -36,7 +36,7 @@ This matrix is **draft 2026-05-21**; final acceptance requires the external indu
 
 | SR | SL-2 Requirement (paraphrased) | Mapping in open-ot | Status |
 |---|---|---|---|
-| SR 2.1 | Authorisation enforcement | capability-based imports + no ambient authority (SPEC §8 + cells/CLAUDE.md) | ✅ |
+| SR 2.1 | Authorisation enforcement | capability-based imports + no ambient authority (SPEC §8 + cells/AGENTS.md) | ✅ |
 | SR 2.2 | Wireless use control | not applicable (no wireless field per SPEC §11) | — |
 | SR 2.3 | Use control for portable / mobile devices | not applicable to non-mobile PLC | — |
 | SR 2.4 | Mobile code | WASM modules pinned by CID + Ed25519 signature; only signed modules execute | ✅ |

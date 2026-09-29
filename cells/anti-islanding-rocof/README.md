@@ -61,6 +61,6 @@ Used by `:loop:islanding-decision` per `PROTOTYPE-MICROGRID.md` §2.5. Trip late
 
 ## Future extensions (deferred to MVP+1)
 
-- Cross-cell typed neighbor messages to bus-tie controller (currently emitted via orchestrator-mediated path; see open-ot framework note in `cells/CLAUDE.md`).
+- Cross-cell typed neighbor messages to bus-tie controller (currently emitted via orchestrator-mediated path; see open-ot framework note in `cells/AGENTS.md`).
 - Phase-jump (vector-shift) detection — adds 4th violation counter.
 - Rolling-mean ROCOF instead of single-sample diff (smoother, less false-trip).

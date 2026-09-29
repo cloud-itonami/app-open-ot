@@ -92,7 +92,7 @@ CAN-FD × 2 ◄──[ISO]──────┤  │ bare-metal C (option: WAMR 
 | Core | Stack |
 |---|---|
 | M7 | Zephyr LTS 4.x + WAMR AOT + Zenoh-Pico — soft-RT BFB cells (1 ms cycle, ≤100 µs jitter) |
-| M4 | bare-metal C (default) — hard-RT motion / safety interlock at 100 µs cycle. Optional second WAMR instance behind a build flag (carry-over open question per CLAUDE.md) |
+| M4 | bare-metal C (default) — hard-RT motion / safety interlock at 100 µs cycle. Optional second WAMR instance behind a build flag (carry-over open question per AGENTS.md) |
 
 IPC: NXP RPMsg-Lite mailbox between M7 and M4. M4 publishes telemetry to M7's Zenoh aggregator at ≤ 100 Hz.
 
