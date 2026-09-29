@@ -7,7 +7,7 @@
 //! around a target. Issues `Raise` / `Lower` / `Hold` commands subject to
 //! a tap dwell timer (so the FSM doesn't hammer the physical tap).
 //!
-//! All math is fixed-point integer per cells/CLAUDE.md.
+//! All math is fixed-point integer per cells/AGENTS.md.
 
 use openot_bfb_rs::{
     BasicFunctionBlock, ConfigOnly, EventEnum, LinearMemory, TickResult, TypedSignals,

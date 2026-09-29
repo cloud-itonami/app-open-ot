@@ -15,7 +15,7 @@
 //! ```
 //!
 //! Curve breakpoints are configurable via `Params` to support utility-
-//! specific tuning. All math is fixed-point integer (per cells/CLAUDE.md
+//! specific tuning. All math is fixed-point integer (per cells/AGENTS.md
 //! no-float rule).
 
 use openot_bfb_rs::{

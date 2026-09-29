@@ -3,7 +3,7 @@
 Mirrors the layout used by `risk1/gate-a-rig/src/main.rs`: scratch buffers
 at offset 0x10_0000 (1 MiB), inside a memory grown to 32 pages (2 MiB).
 The C ABI exposed by each cell follows the convention in
-`cells/CLAUDE.md` — `<name>_init(params_ptr, internal_ptr) -> i32` and
+`cells/AGENTS.md` — `<name>_init(params_ptr, internal_ptr) -> i32` and
 `<name>_tick(event_in, data_in_ptr, ecc_state, internal_ptr, params_ptr,
 super_step_lo, super_step_hi, data_out_ptr, out_event_ptr) -> u8`.
 

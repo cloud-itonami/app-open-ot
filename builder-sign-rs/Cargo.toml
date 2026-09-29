@@ -5,7 +5,7 @@ edition = "2021"
 license = "Apache-2.0"
 repository = "https://github.com/etzhayyim/root"
 authors = ["etzhayyim"]
-description = "open-ot builder signing CLI — Ed25519 sign + BLAKE3 CID for WASM / AOT artefacts per SPEC §9. Replaces the `scripts/builder-sign.sh` stub referenced in cells/CLAUDE.md."
+description = "open-ot builder signing CLI — Ed25519 sign + BLAKE3 CID for WASM / AOT artefacts per SPEC §9. Replaces the `scripts/builder-sign.sh` stub referenced in cells/AGENTS.md."
 
 [[bin]]
 name = "builder-sign"

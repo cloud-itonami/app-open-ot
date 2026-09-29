@@ -103,7 +103,7 @@ interchangeable.** Picking the wrong one produces artefacts that nothing loads.
 | Target | Consumer | Where it is documented |
 |---|---|---|
 | `wasm32-unknown-unknown` | `orchestrator/` (wasmtime-py), `risk1/gate-a-rig/` | `risk1/gate-a-rig/build-wasm.sh` |
-| `wasm32-wasi` | embedded path — `wamrc` AOT → Zephyr on Giemon Mimi / Te | `cells/CLAUDE.md` |
+| `wasm32-wasi` | embedded path — `wamrc` AOT → Zephyr on Giemon Mimi / Te | `cells/AGENTS.md` |
 
 Host-side, for the orchestrator and the Gate A rig:
 
@@ -197,7 +197,7 @@ broken.
 
 ## 6. Known documentation gaps not fixed by this file
 
-- `CLAUDE.md` and `SPEC.md` still carry monorepo-relative paths
+- `AGENTS.md` and `SPEC.md` still carry monorepo-relative paths
   (`60-apps/etzhayyim-project-open-ot/...`) from before the split.
 - `cells/Cargo.toml` declares `repository = "https://github.com/etzhayyim/etzhayyim-root"`,
   which 404s; the monorepo is `etzhayyim/root`.

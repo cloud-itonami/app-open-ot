@@ -165,7 +165,7 @@
           (str/includes? qs (str "contain " (reduce + (vals counts)) " `#[test]` functions"))
           (str "quickstart's total = " (reduce + (vals counts)))))
 
-;; ── claim 5: paths the README/CLAUDE.md link to must exist here ─────────────
+;; ── claim 5: paths the README/AGENTS.md link to must exist here ─────────────
 (let [readme (fs/readFileSync (str root "/README.md") "utf8")
       rel (->> (re-seq #"\]\(([^)h][^)]*)\)" readme)
                (map second)
@@ -175,10 +175,10 @@
   (check! :links/relative-resolve (empty? missing)
           (str (count rel) " relative links, missing: " (pr-str missing))))
 
-(let [docs (map #(fs/readFileSync (str root "/" %) "utf8") ["README.md" "CLAUDE.md"])
+(let [docs (map #(fs/readFileSync (str root "/" %) "utf8") ["README.md" "AGENTS.md"])
       stale (filter #(re-find #"60-apps/etzhayyim-project-open-ot/(SPEC|cells|risk1|orchestrator|cad-spec|nixos|PROTOTYPE)" %) docs)]
   (check! :links/no-monorepo-cd (empty? stale)
-          (str (count stale) " of README.md/CLAUDE.md still give monorepo-relative paths as if local")))
+          (str (count stale) " of README.md/AGENTS.md still give monorepo-relative paths as if local")))
 
 ;; ── verdict ─────────────────────────────────────────────────────────────────
 (let [rs @results

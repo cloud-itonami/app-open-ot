@@ -29,7 +29,7 @@ Per ADR-2605151200 §LangGraph + Pregel binding determinism contract and SPEC §
 - **No `gc` feature, no `Box<dyn Trait>` in `tick`.** Static dispatch only.
 - **No `std::time` / `Instant` / `SystemTime`.** `super_step: u64` and any required wall time arrive as data inputs.
 - **No RNG.** Randomness arrives as a data input (replay-deterministic).
-- **No `f32` / `f64` in the tick path.** Use fixed-point `i32` micro-units (1e-6) and `i64` intermediate. AT Lexicon prohibits float at the wire boundary (per root CLAUDE.md), and integer-only math gives a tighter WCET.
+- **No `f32` / `f64` in the tick path.** Use fixed-point `i32` micro-units (1e-6) and `i64` intermediate. AT Lexicon prohibits float at the wire boundary (per root AGENTS.md), and integer-only math gives a tighter WCET.
 - **`#![no_std]` for embedded targets** (`#[cfg(not(test))] no_std`). Tests may use `std`.
 - **`#[no_mangle] extern "C"` ABI** at the crate boundary so WAMR can call directly.
 

@@ -100,7 +100,7 @@ The estimate is bottom-up; the SPEC threshold (6 PM) carries a 26 % slack agains
 | Item | Status |
 |---|---|
 | Build → sign → pin | Specced in SPEC §9: cargo build → `wamrc` AOT → builder DID Ed25519 sign → CID via `b3sum` → atproto record via `com.etzhayyim.apps.openOt.pinModule` |
-| Today | CLI stub at `scripts/builder-sign.sh` (per cells/CLAUDE.md note from 2026-05-20 CLI removal); `pinModule` Lexicon already exists at `00-contracts/lexicons/com/etzhayyim/apps/openOt/pinModule.json` |
+| Today | CLI stub at `scripts/builder-sign.sh` (per cells/AGENTS.md note from 2026-05-20 CLI removal); `pinModule` Lexicon already exists at `00-contracts/lexicons/com/etzhayyim/apps/openOt/pinModule.json` |
 | Edge verification | Mimi / Te / Atama pull CID over XRPC, verify Ed25519 sig against builder DID resolved from atproto, load via WAMR — **not yet implemented** |
 | Risk | Cortex-M7 Ed25519 verify (~5 ms on STM32H753) is well within budget for the boot-time check. Tooling for signing is mature (e.g. `signify-rs`, `ed25519-dalek`) |
 | Effort breakdown | (a) Builder signing CLI re-implementation in Rust (cells/builder-sign-rs); (b) Ed25519 verify shim for Cortex-M7 in `firmware/mimi-zephyr/src/aot-verify.c` + integration with MCUboot; (c) `pinModule` XRPC handler on the cloud gateway VKE + LangServer pod |
@@ -193,6 +193,6 @@ If all three gates retain PASS after embedded measurement + reviewer sign-off, t
 - `60-apps/etzhayyim-project-open-ot/SPEC.md` §8 — IEC 62443-aligned security controls
 - `60-apps/etzhayyim-project-open-ot/SPEC.md` §9 — Build / sign / pin pipeline
 - `60-apps/etzhayyim-project-open-ot/SPEC.md` §11 — Explicit out-of-scope (SIL)
-- `60-apps/etzhayyim-project-open-ot/cells/CLAUDE.md` — `#[no_mangle] extern "C"` ABI rules + no-alloc-after-init invariant
+- `60-apps/etzhayyim-project-open-ot/cells/AGENTS.md` — `#[no_mangle] extern "C"` ABI rules + no-alloc-after-init invariant
 - `60-apps/etzhayyim-project-open-ot/risk1/gate-a-report.md` (+ droop / anti-islanding / stack100 siblings) — Gate A host run
 - `60-apps/etzhayyim-project-open-ot/risk1/gate-b-report.md` — Gate B host run

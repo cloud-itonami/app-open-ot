@@ -33,7 +33,7 @@ root *is* that directory**.
 |---|---|
 | Operator quickstart (what actually runs) | [`docs/operator-quickstart.md`](docs/operator-quickstart.md) |
 | Detailed spec (NSIDs / FB API / Pregel binding) | [`SPEC.md`](SPEC.md) |
-| Project conventions | [`CLAUDE.md`](CLAUDE.md) |
+| Project conventions | [`AGENTS.md`](AGENTS.md) |
 | Hardware spec (Mimi / Te / Atama) | [`cad-spec/`](cad-spec/) |
 | Cell cargo workspace | [`cells/`](cells/) |
 | Orchestrator demos + tests | [`orchestrator/README.md`](orchestrator/README.md) |
@@ -47,7 +47,7 @@ root *is* that directory**.
 ```
 .
 ├── README.md                    ← you are here
-├── CLAUDE.md                    project conventions (LLM-readable)
+├── AGENTS.md                    project conventions (LLM-readable)
 ├── SPEC.md                      detailed spec (NSIDs / FB API / Pregel binding)
 ├── PROTOTYPE-MICROGRID.md       first prototype scope
 ├── CONTRIBUTING.md              contribution policy
